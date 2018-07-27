@@ -62,7 +62,7 @@ class Configure extends React.Component<any, any> {
     
     // Gets list of all open input date parameters
     public populateParams() {
-        const parameters = JSON.parse(window.tableau.extensions.settings.getAll().parameters);
+        const settings  = window.tableau.extensions.settings.getAll();
         window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((params: any) => {
             const options = [];
             const dateparts = [
@@ -73,7 +73,10 @@ class Configure extends React.Component<any, any> {
                 {value: 'month', displayValue: '30 Days ago'},
             ];
             for (const p of params) {
-                const u = parameters.find((param: any) => param.name === p.name);
+                let u: any;
+                if (settings.configured === 'true') {
+                    u = JSON.parse(window.tableau.extensions.settings.getAll().parameters).find((param: any) => param.name === p.name);
+                }
                 if (p.allowableValues.type === 'all' && (p.dataType === 'date' || p.dataType === 'date-time')) {
                     options.push({
                         dates: dateparts.map(v => ({value: v.value+'-'+p.name, displayValue: v.displayValue})),
