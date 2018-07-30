@@ -9,12 +9,12 @@ class Home extends React.Component<any, any> {
 				<div className='icontainer'>
 					<div className='box'>
 						<div className='left'>
-							<h1 className='iheader'>Date Updater Extension</h1>
+							<h1 className='iheader'>Date Updater</h1>
 							<span className='tagline'>Automatically update your date parameters to today's date.</span>
 						</div>
 						<div className='right'>
 							<h4 className='big'>What is it?</h4>
-							<p>No longer will you need to employ crazy hacks or manually update your date parameters. This extension allows you to refresh any date parameter to today's date whenever a workbook is opened.</p>
+							<p>With this extension, no longer will you need to employ crazy hacks or manually update your date parameters. This extension allows you to refresh any date parameter to today's date whenever a workbook is opened.</p>
 							<h4 className='big'>Using the Extension</h4>
 							<ol>
 								<li>Bring in the extension</li>
