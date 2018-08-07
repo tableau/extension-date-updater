@@ -77,6 +77,9 @@ class DateUpdater extends React.Component<any, State> {
         const initialziePromise = window.tableau.extensions.initializeAsync({ configure: this.configure });
         if (initialziePromise) {
             initialziePromise.then(() => {
+                this.setState({
+                    mode: window.tableau.extensions.environment.mode,
+                });
                 const settings = window.tableau.extensions.settings.getAll();
                 if (settings.configured !== 'true') {
                     this.configure();
