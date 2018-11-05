@@ -1,23 +1,35 @@
 import * as React from 'react';
 
-import {
-    ButtonType,
-    ButtonWidget,
-    DropdownType,
-    DropdownWidget,
-} from '@tableau/widgets';
+import { Button, DropdownSelect } from '@tableau/tableau-ui';
 
 declare global {
     interface Window { tableau: any; }
 }
 
+export enum Dates {
+    None = 'None',
+    Today = 'Today',
+    Yesterday = 'Yesterday',
+    SevenDaysAgo = '7 Days ago',
+    ThirtyDaysAgo = '30 Days ago',
+}
+
+const DateOptions: string[] = Object.keys(Dates).map(date => Dates[date]);
+
+interface Parameter {
+    /** The name of the parameter */
+    name: string;
+    /** The selected date */
+    selectedDate: string;
+}
+
 interface State {
-    configured: boolean,
-    datepart: string,
-    no_params: boolean,
-    num: number,
-    parameter: string,
-    parameters: any,
+    configured: boolean;
+    datepart: string;
+    no_params: boolean;
+    num: number;
+    parameter: string;
+    parameters: Parameter[];
 }
 
 // Container for all configurations
@@ -31,24 +43,17 @@ class Configure extends React.Component<any, any> {
         parameters: [],
     };
 
-    constructor(props: any) {
-        super(props);
-        this.datepartChange = this.datepartChange.bind(this);
-        this.populateParams = this.populateParams.bind(this);
-        this.submit = this.submit.bind(this);
+    public onDatepartChangeWrapper = (parameterName: string): ((e: React.ChangeEvent<HTMLSelectElement>) => void) => {
+        return (e: React.ChangeEvent<HTMLSelectElement>): void => {
+            const parameters = this.state.parameters;
+            const parameter = parameters.find((p: Parameter) => p.name === parameterName);
+            if (parameter) {
+                parameter.selectedDate = e.target.value;
+                this.setState({ parameters });
+            }
+        }
     }
 
-    // Handles change in dropdown
-    public datepartChange = (value: any): void => {
-        const update = value.split(/-(.+)/)[0]
-        const param = value.split(/-(.+)/)[1]
-        const state = this.state.parameters;
-        state.find((p: any) => p.name === param).update = update;
-        this.setState({
-            parameters: state,
-        });
-    };
-    
     public sortBy(prop: string) {
         return (a: any, b: any) => {
             if (a[prop] > b[prop]) {
@@ -59,50 +64,37 @@ class Configure extends React.Component<any, any> {
             return 0;
         }
     }
-    
+
     // Gets list of all open input date parameters
-    public populateParams() {
-        const settings  = window.tableau.extensions.settings.getAll();
-        window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((params: any) => {
-            const options = [];
-            const dateparts = [
-                {value: 'none', displayValue: 'None'},
-                {value: 'today', displayValue: 'Today'},
-                {value: 'yesterday', displayValue: 'Yesterday'},
-                {value: 'week', displayValue: '7 Days ago'},
-                {value: 'month', displayValue: '30 Days ago'},
-            ];
-            for (const p of params) {
-                let u: any;
-                if (settings.configured === 'true') {
-                    u = JSON.parse(window.tableau.extensions.settings.getAll().parameters).find((param: any) => param.name === p.name);
+    public populateParams = (): void => {
+        const isConfigured = window.tableau.extensions.settings.getAll().configured === 'true';
+        window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((dashboardParameters: any) => {
+            const parameters: Parameter[] = [];
+            for (const dashboardParameter of dashboardParameters) {
+                let configuredParameter: any;
+                if (isConfigured) {
+                    configuredParameter = JSON.parse(window.tableau.extensions.settings.getAll().parameters).find((parameter: any) => parameter.name === dashboardParameter.name);
                 }
-                if (p.allowableValues.type === 'all' && (p.dataType === 'date' || p.dataType === 'date-time')) {
-                    options.push({
-                        dates: dateparts.map(v => ({value: v.value+'-'+p.name, displayValue: v.displayValue})),
-                        name: p.name,
-                        update: (u) ? u.update : 'none',
+                if (dashboardParameter.allowableValues.type === 'all' && (dashboardParameter.dataType === 'date' || dashboardParameter.dataType === 'date-time')) {
+                    const selectedDate: string = configuredParameter ? configuredParameter.selectedDate : Dates.None;
+                    parameters.push({
+                        name: dashboardParameter.name,
+                        selectedDate,
                     });
                 }
             }
-            options.sort(this.sortBy('name'));
 
-            if (options.length > 0 ) {
-                this.setState({
-                    no_params: false,
-                    parameters: options,
-                });
-            } else {
-                this.setState({
-                    no_params: true,
-                    parameters: [],
-                });
-            }
+            parameters.sort(this.sortBy('name'));
+
+            this.setState({
+                no_params: Object.keys(parameters).length === 0,
+                parameters,
+            });
         });
     }
-    
+
     // Saves settings and closes configure dialog with parameter payload
-    public submit() {
+    public submit = (): void => {
         window.tableau.extensions.settings.set('configured', 'true');
         window.tableau.extensions.settings.set('parameters', JSON.stringify(this.state.parameters));
         window.tableau.extensions.settings.saveAsync().then(() => {
@@ -119,8 +111,8 @@ class Configure extends React.Component<any, any> {
             });
         } 
     }
-    
-    public render() {        
+
+    public render() {
         return (
             <div className='container'>
                 <div className='header'>
@@ -130,13 +122,15 @@ class Configure extends React.Component<any, any> {
                     <p className='text'>Choose the date for the parameters you want to automatically update.</p>
                     <div className='scrolly'>
                     <p className='error' style={{display: (this.state.no_params === true) ? 'inline' : 'none'}}>No open input date parameters found.</p>
-                        {this.state.parameters.map( (p: any) => (
-                            <div className='dateset'>
+                        {this.state.parameters.map((p: Parameter) => (
+                            <div className='dateset' key={`dataset-${p.name}`}>
                                 <div className='pleft'>
                                     {p.name}
                                 </div>
                                 <div className='pright'>
-                                    <DropdownWidget label='' testId={p.name} dropdownType={DropdownType.Line} menuItemInfos={p.dates} onSelect={this.datepartChange} selectedValue={p.update+'-'+p.name}/>
+                                <DropdownSelect className='dropdown-select' kind='line' onChange={this.onDatepartChangeWrapper(p.name)} onSelect={this.onDatepartChangeWrapper(p.name)} value={p.selectedDate}>
+                                    {DateOptions.map((option: string) => <option key={option}>{option}</option>)}
+                                </DropdownSelect>
                                 </div>
                             </div>
                         ) )}
@@ -144,7 +138,7 @@ class Configure extends React.Component<any, any> {
                 </div>
                 <div className='footer'>
                     <div className='btncluster'>
-                        <ButtonWidget buttonType={ButtonType.Go} handleClick={this.submit} testId='set-parameter'>OK</ButtonWidget>
+                        <Button kind='filledGreen' onClick={this.submit}>OK</Button>
                     </div>
                 </div>
             </div>
