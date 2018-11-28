@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Dates } from './Configure';
 import './style.css';
+
+/* tslint:disable:no-console */
 
 declare global {
     interface Window { tableau: any; }
 }
-
-// const date = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 
 interface State {
     mode: string,
@@ -13,81 +14,68 @@ interface State {
 
 class DateUpdater extends React.Component<any, State> {
     public readonly state: State = {
-        mode: 'authoring', 
+        mode: 'authoring',
     };
 
-    constructor(props: any) {
-        super(props);
-        this.configure = this.configure.bind(this);
-    }
-
-    public updateParam(parameters: any) {
+    public updateParameters(parameters: any) {
         parameters = JSON.parse(parameters);
-        window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((params: any) => {
-            params.forEach((p: any) => {
-                let d = new Date();
-                if (p.allowableValues.type === 'all' && (p.dataType === 'date' || p.dataType === 'date-time')) {
-                    const pset = parameters.find((param: any) => param.name === p.name);
-                    switch(pset.update) {
-                        case 'today':
-                            d = new Date();
-                            break;
-                        case 'yesterday':
-                            d.setDate(d.getDate()-1);
-                            break;
-                        case 'week':
-                            d.setDate(d.getDate()-7);
-                            break;
-                        case 'month':
-                            d.setDate(d.getDate()-30);
-                            break;
-                        default:
-                            d = new Date();
-                    }
-                    if (pset.update !== 'none') {
-                        p.changeValueAsync(d);
+        window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((dashboardParameters: any) => {
+            dashboardParameters.forEach((dashboardParameter: any) => {
+                if (dashboardParameter.allowableValues.type === 'all' && (dashboardParameter.dataType === 'date' || dashboardParameter.dataType === 'date-time')) {
+                    const parameter = parameters.find((p: any) => p.name === dashboardParameter.name);
+                    if (parameter) {
+                        const date = new Date();
+                        switch (parameter.selectedDate) {
+                            case Dates.Yesterday:
+                                date.setDate(date.getDate() - 1);
+                                break;
+                            case Dates.SevenDaysAgo:
+                                date.setDate(date.getDate() - 7);
+                                break;
+                            case Dates.ThirtyDaysAgo:
+                                date.setDate(date.getDate() - 30);
+                                break;
+                        }
+                        if (parameter.selectedDate !== Dates.None) {
+                            dashboardParameter.changeValueAsync(date);
+                        }
                     }
                 }
             });
         });
     }
-    
-    // Pops open the configure page
-    public configure() {
+
+    // Pops open the configure dialog
+    public configure = (): void => {
         const popupUrl = (window.location.origin.includes('localhost')) ? `${window.location.origin}/#/config` : `${window.location.origin}/extension-date-updater/#/config`;
         const payload = '';
         window.tableau.extensions.ui.displayDialogAsync(popupUrl, payload, { height: 250, width: 375 }).then(() => {
             const settings = window.tableau.extensions.settings.getAll();
-            this.updateParam(settings.parameters);
+            this.updateParameters(settings.parameters);
         }).catch((error: any) => {
             switch (error.errorCode) {
                 case window.tableau.ErrorCodes.DialogClosedByUser:
-                    // tslint:disable-next-line:no-console
                     console.log('Dialog was closed by user.');
                     break;
                 default:
-                    // tslint:disable-next-line:no-console
                     console.error(error.message);
             }
         });
     }
 
-    // Once we have mounted, we call to initialize
+    // Prior to mounting we initialize
     public componentWillMount() {
-        const initialziePromise = window.tableau.extensions.initializeAsync({ configure: this.configure });
-        if (initialziePromise) {
-            initialziePromise.then(() => {
-                this.setState({
-                    mode: window.tableau.extensions.environment.mode,
-                });
-                const settings = window.tableau.extensions.settings.getAll();
-                if (settings.configured !== 'true') {
-                    this.configure();
-                } else {
-                    this.updateParam(settings.parameters);
-                }
-          });
-        }
+        window.tableau.extensions.initializeAsync({ configure: this.configure }).then(() => {
+            this.setState({
+                mode: window.tableau.extensions.environment.mode,
+            });
+            const settings = window.tableau.extensions.settings.getAll();
+            if (settings.configured !== 'true') {
+                this.configure();
+            } else {
+                this.updateParameters(settings.parameters);
+            }
+        });
     }
 
     public render() {
