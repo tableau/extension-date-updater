@@ -68,7 +68,7 @@ class Configure extends React.Component<any, any> {
         const settings = window.tableau.extensions.settings.getAll();
         window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((dashboardParameters: any) => {
             const parameters: Parameter[] = [];
-            const configuredParameters = JSON.parse(settings.parameters);
+            const configuredParameters = (settings.parameters) ? JSON.parse(settings.parameters) : [];
             for (const dashboardParameter of dashboardParameters) {
                 let configuredParameter: any;
                 if (settings.configured === 'true') {
