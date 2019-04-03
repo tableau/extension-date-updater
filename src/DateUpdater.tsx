@@ -67,6 +67,18 @@ class DateUpdater extends React.Component<any, State> {
                             case Dates.ThirtyDaysAgo:
                                 date.setDate(date.getDate() - 30);
                                 break;
+                            case Dates.SixtyDaysAgo:
+                                date.setDate(date.getDate() - 60);
+                                break;
+                            case Dates.NinetyDaysAgo:
+                                date.setDate(date.getDate() - 90);
+                                break;
+                            case Dates.SixMonthsAgo:
+                                date.setMonth(date.getMonth() - 6);
+                                break;
+                            case Dates.OneYearAgo:
+                                date.setMonth(date.getMonth() - 12);
+                                break;
                         }
                         if (parameter.selectedDate !== Dates.None) {
                             dashboardParameter.changeValueAsync(date);
