@@ -120,7 +120,7 @@ body {
 
 .btncluster {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     width: 100%;
     margin-bottom: 12px;
 }

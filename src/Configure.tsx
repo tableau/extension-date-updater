@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, DropdownSelect } from '@tableau/tableau-ui';
+import { Button, Checkbox, DropdownSelect } from '@tableau/tableau-ui';
 
 declare global {
     interface Window { tableau: any; }
@@ -22,6 +22,7 @@ interface Parameter {
 }
 
 interface State {
+    adjust: boolean,
     configured: boolean;
     datepart: string;
     no_params: boolean;
@@ -44,6 +45,7 @@ function sortBy(prop: string) {
 // Container for all configurations
 class Configure extends React.Component<any, any> {
     public readonly state: State = {
+        adjust: false,
         configured: false,
         datepart: 'days',
         no_params: false,
@@ -52,6 +54,7 @@ class Configure extends React.Component<any, any> {
         parameters: [],
     };
 
+    // Updates parameter dropdowns
     public onDatePartChangeWrapper = (parameterName: string): ((e: React.ChangeEvent<HTMLSelectElement>) => void) => {
         return (e: React.ChangeEvent<HTMLSelectElement>): void => {
             const parameters = this.state.parameters;
@@ -62,6 +65,11 @@ class Configure extends React.Component<any, any> {
             }
         }
     }
+    
+    // Handles change in adjust for time zone checkbox
+    public adjustChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        this.setState({ adjust: e.target.checked });
+    };
 
     // Gets list of all open input date parameters
     public populateParams = (): void => {
@@ -96,6 +104,7 @@ class Configure extends React.Component<any, any> {
     public submit = (): void => {
         window.tableau.extensions.settings.set('configured', 'true');
         window.tableau.extensions.settings.set('parameters', JSON.stringify(this.state.parameters));
+        window.tableau.extensions.settings.set('adjust', this.state.adjust);
         window.tableau.extensions.settings.saveAsync().then(() => {
             window.tableau.extensions.ui.closeDialog(this.state.parameter);
         });
@@ -104,6 +113,12 @@ class Configure extends React.Component<any, any> {
     // Once we have mounted, we call to initialize
     public componentWillMount() {
         window.tableau.extensions.initializeDialogAsync().then(() => {
+            const settings = window.tableau.extensions.settings.getAll();
+            if (settings.configured === 'true') {
+                this.setState({
+                    adjust: settings.adjust === 'true' || false,
+                });
+            }
             this.populateParams();
         });
     }
@@ -134,6 +149,7 @@ class Configure extends React.Component<any, any> {
                 </div>
                 <div className='footer'>
                     <div className='btncluster'>
+                    <Checkbox checked={this.state.adjust} onChange={this.adjustChange} style={{ width: '200px' }}>Adjust for timezone.</Checkbox>
                         <Button kind='filledGreen' onClick={this.submit}>OK</Button>
                     </div>
                 </div>

@@ -18,6 +18,7 @@ class DateUpdater extends React.Component<any, State> {
     };
 
     public updateParameters(parameters: any) {
+        const settings = window.tableau.extensions.settings.getAll();
         parameters = JSON.parse(parameters);
 
         // Start backwards compatibility conversion //
@@ -69,6 +70,9 @@ class DateUpdater extends React.Component<any, State> {
                                 break;
                         }
                         if (parameter.selectedDate !== Dates.None) {
+                            if (settings.adjust === 'true'){
+                                date.setHours(date.getHours() - date.getTimezoneOffset()/60);
+                            }
                             dashboardParameter.changeValueAsync(date);
                         }
                     }
@@ -79,7 +83,7 @@ class DateUpdater extends React.Component<any, State> {
 
     // Pops open the configure dialog
     public configure = (): void => {
-        const popupUrl = (window.location.origin.includes('localhost')) ? `${window.location.origin}/#/config` : `${window.location.origin}/extension-date-updater/#/config`;
+        const popupUrl = `${window.location.origin}${process.env.PUBLIC_URL}/#/config`;
         const payload = '';
         window.tableau.extensions.ui.displayDialogAsync(popupUrl, payload, { height: 250, width: 375 }).then(() => {
             const settings = window.tableau.extensions.settings.getAll();
