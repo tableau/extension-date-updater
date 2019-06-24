@@ -12,6 +12,10 @@ export enum Dates {
     Yesterday = 'Yesterday',
     SevenDaysAgo = '7 Days ago',
     ThirtyDaysAgo = '30 Days ago',
+    SixtyDaysAgo = '60 Days ago',
+    NinetyDaysAgo = '90 Days ago',
+    SixMonthsAgo = '6 Months ago',
+    OneYearAgo = '1 Year ago',
 }
 
 const DateOptions: string[] = Object.keys(Dates).map(date => Dates[date]);
