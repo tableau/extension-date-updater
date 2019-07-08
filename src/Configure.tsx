@@ -18,7 +18,7 @@ export enum Dates {
     OneYearAgo = '1 Year ago',
 }
 
-const DateOptions: string[] = Object.keys(Dates).map(date => Dates[date]);
+const DateOptions: string[] = Object.keys(Dates).map((date: any) => Dates[date]);
 
 interface Parameter {
     name: string;
