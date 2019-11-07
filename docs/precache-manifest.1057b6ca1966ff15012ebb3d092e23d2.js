@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4917987416a56ea998a06dcd1767c711",
+    "revision": "c88ef9e7b2d192f1d8a383102890dd02",
     "url": "/extension-date-updater/index.html"
   },
   {
-    "revision": "e110a0dff1c5261d1c73",
+    "revision": "d0b14832f4ba7bbcfc70",
     "url": "/extension-date-updater/static/css/main.6a6433a1.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/extension-date-updater/static/js/2.725b33db.chunk.js"
   },
   {
-    "revision": "e110a0dff1c5261d1c73",
-    "url": "/extension-date-updater/static/js/main.846b36ab.chunk.js"
+    "revision": "d0b14832f4ba7bbcfc70",
+    "url": "/extension-date-updater/static/js/main.5c53b15a.chunk.js"
   },
   {
     "revision": "44867a6feccf91cc91c5",

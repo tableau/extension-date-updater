@@ -22,34 +22,36 @@ class DateUpdater extends React.Component<any, State> {
         parameters = JSON.parse(parameters);
 
         // Start backwards compatibility conversion //
-        for (const parameter of parameters) {
-            if (parameter.selectedDate) {
-                break;
-            } else {
-                if (parameter.update) {
-                    switch (parameter.update) {
-                        case 'today':
-                            parameter.selectedDate = Dates.Today;
-                            break;
-                        case 'yesterday':
-                            parameter.selectedDate = Dates.Yesterday;
-                            break;
-                        case 'week':
-                            parameter.selectedDate = Dates.SevenDaysAgo;
-                            break;
-                        case 'month':
-                            parameter.selectedDate = Dates.ThirtyDaysAgo;
-                            break;
-                        default:
-                            parameter.selectedDate = Dates.None;
+        if (window.tableau.extensions.environment.mode === "authoring") {
+            for (const parameter of parameters) {
+                if (parameter.selectedDate) {
+                    break;
+                } else {
+                    if (parameter.update) {
+                        switch (parameter.update) {
+                            case 'today':
+                                parameter.selectedDate = Dates.Today;
+                                break;
+                            case 'yesterday':
+                                parameter.selectedDate = Dates.Yesterday;
+                                break;
+                            case 'week':
+                                parameter.selectedDate = Dates.SevenDaysAgo;
+                                break;
+                            case 'month':
+                                parameter.selectedDate = Dates.ThirtyDaysAgo;
+                                break;
+                            default:
+                                parameter.selectedDate = Dates.None;
+                        }
+                        delete parameter.update
+                        delete parameter.dates
                     }
-                    delete parameter.update
-                    delete parameter.dates
                 }
             }
+            window.tableau.extensions.settings.set('parameters', JSON.stringify(parameters));
+            window.tableau.extensions.settings.saveAsync();
         }
-        window.tableau.extensions.settings.set('parameters', JSON.stringify(parameters));
-        window.tableau.extensions.settings.saveAsync();
         // End backwards compatibility conversion //
 
         window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((dashboardParameters: any) => {
@@ -82,8 +84,8 @@ class DateUpdater extends React.Component<any, State> {
                                 break;
                         }
                         if (parameter.selectedDate !== Dates.None) {
-                            if (settings.adjust === 'true'){
-                                date.setHours(date.getHours() - date.getTimezoneOffset()/60);
+                            if (settings.adjust === 'true') {
+                                date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
                             }
                             dashboardParameter.changeValueAsync(date);
                         }
