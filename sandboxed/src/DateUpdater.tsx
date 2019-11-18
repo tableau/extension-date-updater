@@ -25,34 +25,36 @@ class DateUpdater extends React.Component<any, State> {
         parameters = JSON.parse(parameters);
 
         // Start backwards compatibility conversion //
-        for (const parameter of parameters) {
-            if (parameter.selectedDate) {
-                break;
-            } else {
-                if (parameter.update) {
-                    switch (parameter.update) {
-                        case 'today':
-                            parameter.selectedDate = Dates.Today;
-                            break;
-                        case 'yesterday':
-                            parameter.selectedDate = Dates.Yesterday;
-                            break;
-                        case 'week':
-                            parameter.selectedDate = Dates.SevenDaysAgo;
-                            break;
-                        case 'month':
-                            parameter.selectedDate = Dates.ThirtyDaysAgo;
-                            break;
-                        default:
-                            parameter.selectedDate = Dates.None;
+        if (window.tableau.extensions.environment.mode === "authoring") {
+            for (const parameter of parameters) {
+                if (parameter.selectedDate) {
+                    break;
+                } else {
+                    if (parameter.update) {
+                        switch (parameter.update) {
+                            case 'today':
+                                parameter.selectedDate = Dates.Today;
+                                break;
+                            case 'yesterday':
+                                parameter.selectedDate = Dates.Yesterday;
+                                break;
+                            case 'week':
+                                parameter.selectedDate = Dates.SevenDaysAgo;
+                                break;
+                            case 'month':
+                                parameter.selectedDate = Dates.ThirtyDaysAgo;
+                                break;
+                            default:
+                                parameter.selectedDate = Dates.None;
+                        }
+                        delete parameter.update
+                        delete parameter.dates
                     }
-                    delete parameter.update
-                    delete parameter.dates
                 }
             }
+            window.tableau.extensions.settings.set('parameters', JSON.stringify(parameters));
+            window.tableau.extensions.settings.saveAsync();
         }
-        window.tableau.extensions.settings.set('parameters', JSON.stringify(parameters));
-        window.tableau.extensions.settings.saveAsync();
         // End backwards compatibility conversion //
 
         window.tableau.extensions.dashboardContent.dashboard.getParametersAsync().then((dashboardParameters: any) => {
@@ -100,7 +102,7 @@ class DateUpdater extends React.Component<any, State> {
     public configure = (): void => {
         const popupUrl = `${baseURL}/config.html`;
         const payload = '';
-        window.tableau.extensions.ui.displayDialogAsync(popupUrl, payload, { height: 250, width: 375 }).then(() => {
+        window.tableau.extensions.ui.displayDialogAsync(popupUrl, payload, { height: 260, width: 375 }).then(() => {
             const settings = window.tableau.extensions.settings.getAll();
             this.updateParameters(settings.parameters);
         }).catch((error: any) => {
@@ -132,9 +134,7 @@ class DateUpdater extends React.Component<any, State> {
     public render() {
         return (
             <div className={'cog ' + this.state.mode} title='This cog will not show in viewer mode.'>
-                <svg className='svg-inline--fa fa-cog fa-w-16 fa-2x click' onClick={this.configure} aria-labelledby='svg-inline--fa-title-1' data-prefix='fas' data-icon='cog' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' data-fa-i2svg='true'>
-                    <path fill='currentColor' d='M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z' />
-                </svg>
+                <svg className="click" onClick={this.configure} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z" /></svg>
             </div>
         );
     }
