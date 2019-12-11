@@ -82,6 +82,23 @@ class DateUpdater extends React.Component<any, State> {
                             case Dates.OneYearAgo:
                                 date.setMonth(date.getMonth() - 12);
                                 break;
+                            case Dates.BeginWeekSun:
+                                date.setDate(date.getDate() - date.getDay());
+                                break;
+                            case Dates.BeginWeekMon:
+                                date.setDate(date.getDate() - date.getDay() + 1);
+                                break;
+                            case Dates.BeginMonth:
+                                date.setDate(1);
+                                break;
+                            case Dates.BeginQuarter:
+                                date.setDate(1);
+                                date.setMonth((Math.ceil((date.getMonth() + 1) / 3) - 1) * 3);
+                                break;
+                            case Dates.BeginYear:
+                                date.setDate(1);
+                                date.setMonth(0);
+                                break;
                         }
                         if (parameter.selectedDate !== Dates.None) {
                             if (settings.adjust === 'true') {

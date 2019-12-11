@@ -16,6 +16,11 @@ export enum Dates {
     NinetyDaysAgo = '90 Days ago',
     SixMonthsAgo = '6 Months ago',
     OneYearAgo = '1 Year ago',
+    BeginWeekSun = 'Beginning of Week (Sun)',
+    BeginWeekMon = 'Beginning of Week (Mon)',
+    BeginMonth = 'Beginning of Month',
+    BeginQuarter = 'Beginning of Quarter',
+    BeginYear = 'Beginning of Year',
 }
 
 const DateOptions: string[] = Object.keys(Dates).map((date: any) => Dates[date]);
@@ -69,7 +74,7 @@ class Configure extends React.Component<any, any> {
             }
         }
     }
-    
+
     // Handles change in adjust for time zone checkbox
     public adjustChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({ adjust: e.target.checked });
@@ -136,24 +141,24 @@ class Configure extends React.Component<any, any> {
                 <div>
                     <p className='text'>Choose the date for the parameters you want to automatically update.</p>
                     <div className='scrolly'>
-                    <p className='error' style={{display: (this.state.no_params === true) ? 'inline' : 'none'}}>No open input date parameters found.</p>
+                        <p className='error' style={{ display: (this.state.no_params === true) ? 'inline' : 'none' }}>No open input date parameters found.</p>
                         {this.state.parameters.map((p: Parameter) => (
                             <div className='dateset' key={`dataset-${p.name}`}>
                                 <div className='pleft'>
                                     {p.name}
                                 </div>
                                 <div className='pright'>
-                                <DropdownSelect className='dropdown-select' kind='line' onChange={this.onDatePartChangeWrapper(p.name)} onSelect={this.onDatePartChangeWrapper(p.name)} value={p.selectedDate}>
-                                    {DateOptions.map((option: string) => <option key={option}>{option}</option>)}
-                                </DropdownSelect>
+                                    <DropdownSelect className='dropdown-select' kind='line' onChange={this.onDatePartChangeWrapper(p.name)} onSelect={this.onDatePartChangeWrapper(p.name)} value={p.selectedDate}>
+                                        {DateOptions.map((option: string) => <option key={option}>{option}</option>)}
+                                    </DropdownSelect>
                                 </div>
                             </div>
-                        ) )}
+                        ))}
                     </div>
                 </div>
                 <div className='footer'>
                     <div className='btncluster'>
-                    <Checkbox checked={this.state.adjust} onChange={this.adjustChange} style={{ width: '200px' }}>Adjust for timezone.</Checkbox>
+                        <Checkbox checked={this.state.adjust} onChange={this.adjustChange} style={{ width: '200px' }}>Adjust for timezone.</Checkbox>
                         <Button kind='filledGreen' onClick={this.submit}>OK</Button>
                     </div>
                 </div>
