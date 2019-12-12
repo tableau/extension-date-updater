@@ -6,11 +6,10 @@ Download the Date Updater [manifest file](https://extensiongallery.tableau.com/p
 
 ## Using the Extension
 1. Bring in the extension
-2. In the configuration window, choose the date parameter to update
+2. In the configuration window you will see all date parameters listed
 *Note: It must be a Date or Date-Time parameter and must allow "All" values*
-3. Click OK
-
-Note: You can add as many instances of this extension as you like!
+3. Select what date you want to set the paramters to when the dashboard is loaded. If you don't want any updates on a parameter, choose None.
+4. Click OK and watch your parameter update!
 
 ## How to install for local use
 1. Make sure you have [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) installed. 
