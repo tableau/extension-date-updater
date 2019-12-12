@@ -7,6 +7,7 @@ Download the Date Updater [manifest file](https://extensiongallery.tableau.com/p
 ## Using the Extension
 1. Bring in the extension
 2. In the configuration window, choose the date parameter to update
+*Note: It must be a Date or Date-Time parameter and must allow "All" values*
 3. Click OK
 
 Note: You can add as many instances of this extension as you like!
