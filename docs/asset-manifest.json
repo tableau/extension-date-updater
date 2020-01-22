@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/extension-date-updater/static/css/main.9eea45d8.chunk.css",
-    "main.js": "/extension-date-updater/static/js/main.83c7409e.chunk.js",
-    "main.js.map": "/extension-date-updater/static/js/main.83c7409e.chunk.js.map",
+    "main.js": "/extension-date-updater/static/js/main.60a0e68a.chunk.js",
+    "main.js.map": "/extension-date-updater/static/js/main.60a0e68a.chunk.js.map",
     "runtime~main.js": "/extension-date-updater/static/js/runtime~main.bf6364c0.js",
     "runtime~main.js.map": "/extension-date-updater/static/js/runtime~main.bf6364c0.js.map",
     "static/js/2.2e55fda4.chunk.js": "/extension-date-updater/static/js/2.2e55fda4.chunk.js",
     "static/js/2.2e55fda4.chunk.js.map": "/extension-date-updater/static/js/2.2e55fda4.chunk.js.map",
     "index.html": "/extension-date-updater/index.html",
-    "precache-manifest.0430adbde9202bccebfb4dcdca79b22c.js": "/extension-date-updater/precache-manifest.0430adbde9202bccebfb4dcdca79b22c.js",
+    "precache-manifest.a9b253110f08bdec00bf6695aef8a0b8.js": "/extension-date-updater/precache-manifest.a9b253110f08bdec00bf6695aef8a0b8.js",
     "service-worker.js": "/extension-date-updater/service-worker.js",
     "static/css/main.9eea45d8.chunk.css.map": "/extension-date-updater/static/css/main.9eea45d8.chunk.css.map"
   }

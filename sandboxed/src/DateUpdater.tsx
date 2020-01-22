@@ -67,6 +67,9 @@ class DateUpdater extends React.Component<any, State> {
                             case Dates.Yesterday:
                                 date.setDate(date.getDate() - 1);
                                 break;
+                            case Dates.TwoDaysAgo:
+                                date.setDate(date.getDate() - 2);
+                                break;
                             case Dates.SevenDaysAgo:
                                 date.setDate(date.getDate() - 7);
                                 break;

@@ -11,6 +11,7 @@ export enum Dates {
     None = 'None',
     Today = 'Today',
     Yesterday = 'Yesterday',
+    TwoDaysAgo = '2 Days Ago',
     SevenDaysAgo = '7 Days ago',
     ThirtyDaysAgo = '30 Days ago',
     SixtyDaysAgo = '60 Days ago',
