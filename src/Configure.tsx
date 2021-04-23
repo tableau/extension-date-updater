@@ -6,25 +6,25 @@ declare global {
     interface Window { tableau: any; }
 }
 
-export enum Dates {
-    None = 'None',
-    Today = 'Today',
-    Yesterday = 'Yesterday',
-    TwoDaysAgo = '2 Days Ago',
-    SevenDaysAgo = '7 Days ago',
-    ThirtyDaysAgo = '30 Days ago',
-    SixtyDaysAgo = '60 Days ago',
-    NinetyDaysAgo = '90 Days ago',
-    SixMonthsAgo = '6 Months ago',
-    OneYearAgo = '1 Year ago',
-    BeginWeekSun = 'Beginning of Week (Sun)',
-    BeginWeekMon = 'Beginning of Week (Mon)',
-    BeginMonth = 'Beginning of Month',
-    BeginQuarter = 'Beginning of Quarter',
-    BeginYear = 'Beginning of Year',
-}
+export const Dates = {
+    None: 'None',
+    Today: 'Today',
+    Yesterday: 'Yesterday',
+    TwoDaysAgo: '2 Days Ago',
+    SevenDaysAgo: '7 Days ago',
+    ThirtyDaysAgo: '30 Days ago',
+    SixtyDaysAgo: '60 Days ago',
+    NinetyDaysAgo: '90 Days ago',
+    SixMonthsAgo: '6 Months ago',
+    OneYearAgo: '1 Year ago',
+    BeginWeekSun: 'Beginning of Week (Sun)',
+    BeginWeekMon: 'Beginning of Week (Mon)',
+    BeginMonth: 'Beginning of Month',
+    BeginQuarter: 'Beginning of Quarter',
+    BeginYear: 'Beginning of Year',
+} as const;
 
-const DateOptions: string[] = Object.keys(Dates).map((date: any) => Dates[date]);
+const DateOptions: string[] = Object.keys(Dates).map((date) => Dates[date as keyof typeof Dates]);
 
 interface Parameter {
     name: string;
