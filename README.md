@@ -1,17 +1,20 @@
+[![As-Is](https://img.shields.io/badge/Support%20Level-As--Is-e8762c.svg)](https://www.tableau.com/support-levels-it-and-developer-tools)
+
 # Date Updater
 No longer will you need to employ crazy hacks or manually update your date parameters. This extension allows you to refresh any date parameter to today's date whenever a workbook is opened.
 
-## How to use an Extension
-Download the Date Updater [manifest file](https://extensiongallery.tableau.com/products/28). Open Tableau Desktop 2018.2 or higher, drag in the "Extension" object to a dashboard. Click "My Extensions" and find the manifest file (.trex) you downloaded above.
+## Using the Extension from Tableau Exchange (Recommended)
+See the Tableau Help topic [Use Dashboard Extensions](https://help.tableau.com/current/pro/desktop/en-us/dashboard_extensions.htm) for directions. When presented with the list of available Dashboard Extensions, search for Date Updater to find and install this one.
 
-## Using the Extension
+### Using the Extension
 1. Bring in the extension
 2. In the configuration window you will see all date parameters listed
 *Note: It must be a Date or Date-Time parameter and must allow "All" values*
-3. Select what date you want to set the paramters to when the dashboard is loaded. If you don't want any updates on a parameter, choose None.
+3. Select what date you want to set the parameters to when the dashboard is loaded. If you don't want any updates on a parameter, choose None.
 4. Click OK and watch your parameter update!
 
-## How to install for local use
+## Download the Extension Code to Develop Locally
+If you want to use a locally-built version of this extension or if you want to make any of your own changes, follow these steps:
 1. Make sure you have [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) installed. 
 2. Clone or download and unzip this repository. Open the command line to the `extension-date-updater-master` folder and run `yarn` to install the node modules.
 3. Edit the `homepage` in the `package.json` file to the server where you are going to host the extension. For example:
@@ -23,4 +26,6 @@ Download the Date Updater [manifest file](https://extensiongallery.tableau.com/p
 6. Update the existing or create a new manifest file (.trex) to point to the URL where you are hosting the extension with `/#/dateupdate` at the end. For example: `http://localhost:8080/#/dateupdate`.
 
 ## Support
-If you have questions about the extension or found a bug please open a new [issue](https://github.com/tableau/extension-date-updater/issues).
+Tableau customers can contact the Tableau Support team for help.
+
+For any local build or code related questions, please post to the [Issues](https://github.com/tableau/extension-date-updater/issues) tab here for community support.
